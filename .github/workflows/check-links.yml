@@ -1,0 +1,48 @@
+name: Check Documentation Links
+
+on:
+  pull_request:
+    paths:
+      - 'fern/**'
+      - '.github/workflows/check-links.yml'
+
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - run: pnpm install
+
+      - name: Create link checker script
+        run: |
+          cat > check_docs_links.sh << 'EOF'
+          #!/bin/bash
+
+          # Run broken-links command and capture output
+          output=$(pnpm run fern:broken-links)
+
+          # Filter only lines with broken links inside /docs/ or external docs
+          echo "$output" | grep -E 'broken link to /(docs|elevenlabs\.io/docs)' > filtered_output.txt
+
+          # Check if there are still relevant broken links
+          if [[ -s filtered_output.txt ]]; then
+            echo "Detected broken links in /docs or allowed external docs:"
+            cat filtered_output.txt
+            exit 1
+          else
+            echo "No relevant broken links found."
+            exit 0
+          fi
+          EOF
+          chmod +x check_docs_links.sh
+
+      - name: Check documentation links
+        run: ./check_docs_links.sh

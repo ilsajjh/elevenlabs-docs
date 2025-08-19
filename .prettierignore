@@ -1,0 +1,40 @@
+# Dependencies
+node_modules
+.pnpm-store
+pnpm-lock.yaml
+
+# Build output
+dist
+build
+.next
+out
+
+# Cache
+.cache
+.eslintcache
+.npm
+.pnpm-debug.log
+
+# Environment files
+.env*
+!.env.example
+
+# IDE
+.idea
+.vscode 
+
+# OpenAPI
+fern/apis/api/openapi.json
+
+# Fern
+.preview
+.definition
+
+fern/conversational-ai/pages/customization/personalization.mdx
+fern/conversational-ai/pages/guides/chat-mode.mdx
+
+# Generated snippets
+fern/snippets/generated/**/*.mdx
+
+# Claude Code files
+.claude/commands/*.md
